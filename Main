@@ -1,192 +1,151 @@
-local CoreGui = game:GetService("CoreGui")
-if CoreGui:FindFirstChild("ScriptPlayerToolGui") then CoreGui.ScriptPlayerToolGui:Destroy() end
+-- GUI Principal
+local ScreenGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+ScreenGui.Name = "C00lkiddScriptPlayerTool25"
 
-local ScreenGui = Instance.new("ScreenGui", CoreGui)
-ScreenGui.Name = "ScriptPlayerToolGui"
-ScreenGui.ResetOnSpawn = false
+local main = Instance.new("Frame", ScreenGui)
+main.Size = UDim2.new(0, 400, 0, 300)
+main.Position = UDim2.new(0.5, -200, 0.5, -150)
+main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+main.BorderColor3 = Color3.fromRGB(255, 0, 0)
+main.Draggable = true
+main.Active = true
 
-local function makeDraggable(frame)
-    local dragging, input, start, startPos
-    frame.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            start = i.Position
-            startPos = frame.Position
-            i.Changed:Connect(function()
-                if i.UserInputState == Enum.UserInputState.End then dragging = false end
-            end)
-        end
-    end)
-    frame.InputChanged:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseMovement then input = i end
-    end)
-    game:GetService("UserInputService").InputChanged:Connect(function(i)
-        if i == input and dragging then
-            local delta = i.Position - start
-            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
+-- Minimize button
+local minimize = Instance.new("TextButton", main)
+minimize.Size = UDim2.new(0, 20, 0, 20)
+minimize.Position = UDim2.new(1, -25, 0, 5)
+minimize.Text = "-"
+minimize.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+minimize.BorderColor3 = Color3.fromRGB(255, 0, 0)
+
+-- Close button
+local close = Instance.new("TextButton", main)
+close.Size = UDim2.new(0, 20, 0, 20)
+close.Position = UDim2.new(1, -50, 0, 5)
+close.Text = "X"
+close.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+close.BorderColor3 = Color3.fromRGB(255, 0, 0)
+
+-- Toggle button (E1)
+local toggle = Instance.new("TextButton", ScreenGui)
+toggle.Size = UDim2.new(0, 60, 0, 60)
+toggle.Position = UDim2.new(0, 10, 0.5, -30)
+toggle.Text = "E1"
+toggle.Visible = false
+toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+toggle.BorderColor3 = Color3.fromRGB(255, 0, 0)
+toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggle.TextStrokeTransparency = 0.5
+toggle.TextScaled = true
+toggle.AutoButtonColor = false
+toggle.Draggable = true
+
+-- Toggling
+minimize.MouseButton1Click:Connect(function()
+	main.Visible = false
+	toggle.Visible = true
+end)
+
+toggle.MouseButton1Click:Connect(function()
+	main.Visible = true
+	toggle.Visible = false
+end)
+
+close.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
+
+-- Title
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundTransparency = 1
+title.Text = "C00lkidd Scriptplayertool25"
+title.TextColor3 = Color3.fromRGB(255, 0, 0)
+title.TextScaled = true
+
+-- Tabs
+local tabs = Instance.new("Frame", main)
+tabs.Size = UDim2.new(1, 0, 0, 30)
+tabs.Position = UDim2.new(0, 0, 0, 30)
+tabs.BackgroundTransparency = 1
+
+local executorTab = Instance.new("TextButton", tabs)
+executorTab.Size = UDim2.new(0, 200, 1, 0)
+executorTab.Text = "Executor"
+executorTab.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+executorTab.BorderColor3 = Color3.fromRGB(255, 0, 0)
+
+local scriptsTab = Instance.new("TextButton", tabs)
+scriptsTab.Size = UDim2.new(0, 200, 1, 0)
+scriptsTab.Position = UDim2.new(0, 200, 0, 0)
+scriptsTab.Text = "Scripts"
+scriptsTab.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+scriptsTab.BorderColor3 = Color3.fromRGB(255, 0, 0)
+
+-- Executor Frame
+local executorFrame = Instance.new("Frame", main)
+executorFrame.Size = UDim2.new(1, -20, 1, -70)
+executorFrame.Position = UDim2.new(0, 10, 0, 70)
+executorFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+executorFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+
+local source = Instance.new("TextBox", executorFrame)
+source.Size = UDim2.new(1, -20, 0.8, -10)
+source.Position = UDim2.new(0, 10, 0, 10)
+source.ClearTextOnFocus = false
+source.MultiLine = true
+source.Text = ""
+source.TextColor3 = Color3.new(1, 1, 1)
+source.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+
+local execBtn = Instance.new("TextButton", executorFrame)
+execBtn.Size = UDim2.new(1, -20, 0.2, -10)
+execBtn.Position = UDim2.new(0, 10, 0.8, 0)
+execBtn.Text = "Executar"
+execBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+execBtn.BorderColor3 = Color3.fromRGB(255, 0, 0)
+
+execBtn.MouseButton1Click:Connect(function()
+	loadstring(source.Text)()
+end)
+
+-- Scripts Frame
+local scriptsFrame = Instance.new("Frame", main)
+scriptsFrame.Size = executorFrame.Size
+scriptsFrame.Position = executorFrame.Position
+scriptsFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+scriptsFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+scriptsFrame.Visible = false
+
+local scripts = {
+	["ScriptHub V3"] = "https://scriptblox.com/raw/Universal-Script-ScriptHub-V3-Best-Mobile-ScriptHub-Keyless-16115",
+	["Haxker6666 Hub"] = "https://scriptblox.com/raw/Universal-Script-Haxker6666666-Hub-Keyless-Version-7052",
+	["Coconut Hub"] = "https://scriptblox.com/raw/Universal-Script-FREE-KEYLESS-UNIVERSAL-SCRIPT-10644",
+	["Fisch"] = "https://scriptblox.com/raw/Universal-Script-Fisch-Free-And-Keyless-38900",
+	["UniversalScript Free"] = "https://scriptblox.com/raw/Universal-Script-FREE-OP-HUB-38798"
+}
+
+local y = 10
+for name, url in pairs(scripts) do
+	local btn = Instance.new("TextButton", scriptsFrame)
+	btn.Size = UDim2.new(1, -20, 0, 30)
+	btn.Position = UDim2.new(0, 10, 0, y)
+	btn.Text = name
+	btn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	btn.BorderColor3 = Color3.fromRGB(255, 0, 0)
+	btn.MouseButton1Click:Connect(function()
+		loadstring(game:HttpGet(url))()
+	end)
+	y += 35
 end
 
-local Main = Instance.new("Frame", ScreenGui)
-Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-Main.BorderColor3 = Color3.fromRGB(255, 0, 0)
-Main.BorderSizePixel = 2
-Main.Size = UDim2.new(0, 400, 0, 250)
-Main.Position = UDim2.new(0.3, 0, 0.3, 0)
-Main.Name = "MainWindow"
-makeDraggable(Main)
-
-local Title = Instance.new("TextLabel", Main)
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.Text = "C00lkidd Scriptplayertool25"
-Title.TextColor3 = Color3.fromRGB(255, 0, 0)
-Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 20
-Title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Title.BorderColor3 = Color3.fromRGB(255, 0, 0)
-Title.BorderSizePixel = 2
-
-local ExecutorTab = Instance.new("TextButton", Main)
-ExecutorTab.Size = UDim2.new(0, 100, 0, 25)
-ExecutorTab.Position = UDim2.new(0, 10, 0, 35)
-ExecutorTab.Text = "Executor"
-ExecutorTab.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ExecutorTab.BorderColor3 = Color3.fromRGB(255, 0, 0)
-ExecutorTab.TextColor3 = Color3.new(1, 1, 1)
-ExecutorTab.BorderSizePixel = 2
-ExecutorTab.Font = Enum.Font.SourceSansBold
-ExecutorTab.TextSize = 16
-
-local ScriptsTab = ExecutorTab:Clone()
-ScriptsTab.Parent = Main
-ScriptsTab.Position = UDim2.new(0, 120, 0, 35)
-ScriptsTab.Text = "Scripts"
-
-local ExecutorFrame = Instance.new("Frame", Main)
-ExecutorFrame.Position = UDim2.new(0, 0, 0, 65)
-ExecutorFrame.Size = UDim2.new(1, 0, 1, -65)
-ExecutorFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ExecutorFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
-ExecutorFrame.BorderSizePixel = 2
-
-local Box = Instance.new("TextBox", ExecutorFrame)
-Box.Size = UDim2.new(1, -20, 0, 120)
-Box.Position = UDim2.new(0, 10, 0, 10)
-Box.PlaceholderText = "-- Coloque seu script aqui"
-Box.TextWrapped = true
-Box.TextYAlignment = Enum.TextYAlignment.Top
-Box.TextXAlignment = Enum.TextXAlignment.Left
-Box.TextSize = 16
-Box.Font = Enum.Font.Code
-Box.Text = ""
-Box.ClearTextOnFocus = false
-Box.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Box.BorderColor3 = Color3.fromRGB(255, 0, 0)
-Box.BorderSizePixel = 2
-Box.TextColor3 = Color3.new(1,1,1)
-
-local Execute = Instance.new("TextButton", ExecutorFrame)
-Execute.Text = "Executar"
-Execute.Size = UDim2.new(0, 100, 0, 30)
-Execute.Position = UDim2.new(0.5, -50, 1, -40)
-Execute.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Execute.BorderColor3 = Color3.fromRGB(255, 0, 0)
-Execute.BorderSizePixel = 2
-Execute.TextColor3 = Color3.new(1,1,1)
-Execute.Font = Enum.Font.SourceSansBold
-Execute.TextSize = 18
-Execute.MouseButton1Click:Connect(function()
-    local success, err = pcall(function()
-        loadstring(Box.Text)()
-    end)
-    if not success then warn("Erro:", err) end
+-- Tab switching
+executorTab.MouseButton1Click:Connect(function()
+	executorFrame.Visible = true
+	scriptsFrame.Visible = false
 end)
 
-local ScriptsFrame = Instance.new("Frame", Main)
-ScriptsFrame.Position = ExecutorFrame.Position
-ScriptsFrame.Size = ExecutorFrame.Size
-ScriptsFrame.BackgroundColor3 = ExecutorFrame.BackgroundColor3
-ScriptsFrame.BorderColor3 = ExecutorFrame.BorderColor3
-ScriptsFrame.BorderSizePixel = 2
-ScriptsFrame.Visible = false
-
-local InfiniteYieldBtn = Instance.new("TextButton", ScriptsFrame)
-InfiniteYieldBtn.Size = UDim2.new(0, 150, 0, 40)
-InfiniteYieldBtn.Position = UDim2.new(0.5, -75, 0.2, 0)
-InfiniteYieldBtn.Text = "Infinite Yield"
-InfiniteYieldBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-InfiniteYieldBtn.BorderColor3 = Color3.fromRGB(255, 0, 0)
-InfiniteYieldBtn.TextColor3 = Color3.new(1, 1, 1)
-InfiniteYieldBtn.Font = Enum.Font.SourceSansBold
-InfiniteYieldBtn.TextSize = 18
-InfiniteYieldBtn.BorderSizePixel = 2
-
-InfiniteYieldBtn.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-end)
-
-ExecutorTab.MouseButton1Click:Connect(function()
-    ExecutorFrame.Visible = true
-    ScriptsFrame.Visible = false
-end)
-
-ScriptsTab.MouseButton1Click:Connect(function()
-    ExecutorFrame.Visible = false
-    ScriptsFrame.Visible = true
-end)
-
-local MinBtn = Instance.new("TextButton", Main)
-MinBtn.Text = "_"
-MinBtn.Size = UDim2.new(0, 30, 0, 30)
-MinBtn.Position = UDim2.new(1, -70, 0, 0)
-MinBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-MinBtn.BorderColor3 = Color3.fromRGB(255, 0, 0)
-MinBtn.BorderSizePixel = 2
-MinBtn.TextColor3 = Color3.new(1,1,1)
-MinBtn.Font = Enum.Font.SourceSansBold
-MinBtn.TextSize = 18
-
-local CloseBtn = Instance.new("TextButton", Main)
-CloseBtn.Text = "X"
-CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -35, 0, 0)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CloseBtn.BorderColor3 = Color3.fromRGB(255, 0, 0)
-CloseBtn.BorderSizePixel = 2
-CloseBtn.TextColor3 = Color3.new(1,1,1)
-CloseBtn.Font = Enum.Font.SourceSansBold
-CloseBtn.TextSize = 18
-CloseBtn.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
-
-local Minimized = Instance.new("TextButton", ScreenGui)
-Minimized.Visible = false
-Minimized.Size = UDim2.new(0, 50, 0, 50)
-Minimized.Position = UDim2.new(0.02, 0, 0.5, 0)
-Minimized.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Minimized.BorderColor3 = Color3.fromRGB(255, 0, 0)
-Minimized.BorderSizePixel = 2
-Minimized.Text = "E1"
-Minimized.TextColor3 = Color3.fromRGB(255, 255, 255)
-Minimized.TextSize = 20
-Minimized.Font = Enum.Font.GothamBold
-makeDraggable(Minimized)
-
-local UIGradient = Instance.new("UIGradient", Minimized)
-UIGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
-}
-UIGradient.Rotation = 45
-
-MinBtn.MouseButton1Click:Connect(function()
-    Main.Visible = false
-    Minimized.Visible = true
-end)
-
-Minimized.MouseButton1Click:Connect(function()
-    Main.Visible = true
-    Minimized.Visible = false
+scriptsTab.MouseButton1Click:Connect(function()
+	executorFrame.Visible = false
+	scriptsFrame.Visible = true
 end)
